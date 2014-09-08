@@ -41,19 +41,23 @@
  )
 
 (defun initialize (&key (surface *default-display*))
+  (setf *glass-font-dir*
+	(namestring (concatenate 'string (namestring (asdf:system-source-directory :cl-glass)) "fonts/")) )
   (setf *default-glass-font* (make-instance 'glass-font)
 	*default-glass* (make-instance 'glass :surface surface :font *default-glass-font*)))
 
-;(defmethod initialize )
 (defun blit-glyph (ch &key (glass *default-glass*))
   "blit a glyph using font."
   (with-accessors ((font font)) glass
     (setf (x (srect font)) (+ (pitch font) (* 2 (pitch font) (- ch 32))))
     (sdl-base::blit-surface (fp-src font) (fp-dest glass) (fp-srect font) (fp-drect glass) )))
  
-(defun out (str &key (glass *default-glass*))
+(defun out (str &key (from 0) (to (length str)) (glass *default-glass*))
   "print a string.  No linewrap, control or escape sequence processing."
-  (loop for i across str do
+  (loop for index from from to to do
+       (blit-glyph (char-code (aref str index)) :glass glass)
+       (incf (x (drect glass)) (pitch glass)))
+  #+-(loop for i across str do
        (blit-glyph (char-code i) :glass glass)
        (incf (x (drect glass)) (pitch glass))))
 
@@ -72,21 +76,24 @@
 ;
 
 (defun test-init ()
+  "initialize systems and open window"
   (init-sdl :flags 'nil)
-  (sdl:window 800 600 :title-caption "SDL-GLASS Test" :icon-caption "SDL-GLASSn Test")
+  (sdl:window 800 600 :title-caption "SDL-GLASS Test" :icon-caption "SDL-GLASS Test")
   (setf (sdl:frame-rate) 30)
   (initialize)
 )
 
 (defun test-work ()
+  "do something to fill the screen"
   (clear)
   (gotoxy 20 10)
-  (out "Hello.  Welcome to good ol' glass console.") (cr) (cr)
+  (out "Hello.  Welcome to the good ole glass console.") (cr) (cr)
   (out "Press <esc> to exit...")
   (update-display)
 )
 
 (defun test-main ()
+  "main loop - process events"
   (sdl:with-events ()
     (:quit-event () t)
     (:video-expose-event () (sdl:update-display))
@@ -96,6 +103,7 @@
 		       (return))
 		     (print (sdl:get-keys-state))))  )
 (defun test-uninit ()
-       (sdl:push-quit-event)
-       (close-audio)
-       (quit-sdl :flags 'nil))
+  "uninit and close window"
+  (sdl:push-quit-event)
+  (close-audio)
+  (quit-sdl :flags 'nil))
