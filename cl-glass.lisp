@@ -52,7 +52,7 @@
     (setf (x (srect font)) (+ (pitch font) (* 2 (pitch font) (- ch 32))))
     (sdl-base::blit-surface (fp-src font) (fp-dest glass) (fp-srect font) (fp-drect glass) )))
  
-(defun out (str &key (from 0) (to (length str)) (glass *default-glass*))
+(defun out (str &key (from 0) (to (1- (length str))) (glass *default-glass*))
   "print a string.  No linewrap, control or escape sequence processing."
   (loop for index from from to to do
        (blit-glyph (char-code (aref str index)) :glass glass)
