@@ -89,6 +89,13 @@
     (incf (y r) pixels)))
 ;
 ;
+;;------------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
+;; T E S T
+;; Invoke (test) for entire test.
+;; For interactive development, feel free to test-init, mess around, 
+;; call test-main, exit to REPL with escape, work some more...
+;; at the end, call test-uninit... 
 
 (defun test-init ()
   "initialize systems and open window"
@@ -106,7 +113,6 @@
   (out "Press <esc> to exit...")
   (update-display)
 )
-
 (defun test-main ()
   "main loop - process events"
   (sdl:with-events ()
@@ -115,10 +121,28 @@
     (:key-down-event ()
 		     (when (sdl:key-down-p :sdl-key-escape)
 		       (print "haha")
-		       (return))
+		       (sdl:push-quit-event))
 		     (print (sdl:get-keys-state))))  )
 (defun test-uninit ()
   "uninit and close window"
   (sdl:push-quit-event)
   (close-audio)
   (quit-sdl :flags 'nil))
+
+(defun test ()
+  (test-init)
+  (test-work)
+  (test-main)
+  (test-uninit))
+#|
+Notes:
+=====
+Glyphs are actually about a pixel wider then the character cells.  For now I am
+clipping them to cells.  With color keying it's possible to do the right thing,
+but there are so many issues with this monochromatic fonts anyway... 
+
+The 'font' bitmap contains fonts spaced 2 cells apart to avoid glyph overlap.
+This can be at least optimized by an extra step in font generation, but it's
+another one of those 'why bother' things.
+
+|#
