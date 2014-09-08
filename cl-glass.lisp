@@ -39,39 +39,54 @@
 	(fp-drect gs) (fp (drect gs))
 	(fp-dest gs) (fp (surface gs)))
  )
-
+;;------------------------------------------------------------------------------
+;; 
 (defun initialize (&key (surface *default-display*))
+  "init font directory, default font and default glass, like lispbuilder-sdl"
   (setf *glass-font-dir*
 	(namestring (concatenate 'string (namestring (asdf:system-source-directory :cl-glass)) "fonts/")) )
   (setf *default-glass-font* (make-instance 'glass-font)
 	*default-glass* (make-instance 'glass :surface surface :font *default-glass-font*)))
-
+;;------------------------------------------------------------------------------
+;; Digging low to lispbuilder-sdl's basic rect-rect blitter.  The 'cells'
+;;  abstraction is a bit of a contrivance hoisted upon us, dontcha think?
+;;
 (defun blit-glyph (ch &key (glass *default-glass*))
   "blit a glyph using font."
   (with-accessors ((font font)) glass
     (setf (x (srect font)) (+ (pitch font) (* 2 (pitch font) (- ch 32))))
-    (sdl-base::blit-surface (fp-src font) (fp-dest glass) (fp-srect font) (fp-drect glass) )))
- 
+    (sdl-base::blit-surface 
+     (fp-src font) (fp-dest glass) (fp-srect font) (fp-drect glass) )))
+;;------------------------------------------------------------------------------ 
+;; Basic output.  A wrapper may be written for special chars. 
+;; Linewrap should be handled by word-break code; it is rarely useful to break
+;; lines at margin...
+;;
 (defun out (str &key (from 0) (to (1- (length str))) (glass *default-glass*))
   "print a string.  No linewrap, control or escape sequence processing."
   (loop for index from from to to do
        (blit-glyph (char-code (aref str index)) :glass glass)
        (incf (x (drect glass)) (pitch glass)))
   #+-(loop for i across str do
-       (blit-glyph (char-code i) :glass glass)
-       (incf (x (drect glass)) (pitch glass))))
-
+	  (blit-glyph (char-code i) :glass glass)
+	  (incf (x (drect glass)) (pitch glass))))
+;;------------------------------------------------------------------------------
+;;
 (defun gotoxy (x y &key (glass *default-glass*))
+  "position cursor at x y character coordinates, assuming static char grid"
   (setf (x (drect glass)) (* x (pitch glass))
 	(y (drect glass)) (* y (line-h glass))))
-
+;;------------------------------------------------------------------------------
+;;
 (defun clear (&key (glass *default-glass*))
   (fill-surface  *black* :surface (surface glass)))
-
-(defun cr (&key (glass *default-glass*))
+;;------------------------------------------------------------------------------
+;; Note: with custom pixel increment, gotoxy may not make sense.
+(defun cr (&key (glass *default-glass*) (pixels (line-h glass)))
+  "perform a cr, optionally specifying y increment in pixels"
   (let ((r (drect glass)))
     (setf (x r) 0)
-    (incf (y r) (line-h glass))))
+    (incf (y r) pixels)))
 ;
 ;
 
