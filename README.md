@@ -3,6 +3,11 @@ CL-GLASS
 
 A simple 'glass' fixed-width font console for text applications using SDL.
 
+Work-in-progress
+----------------
+
+A bare minimum has been implemented.  Font loading and description will be updated soon.
+
 Rationale
 ---------
 
@@ -55,3 +60,4 @@ move cursor to next line.  Y is advanced by line height or optional pixel amount
 clear glass
 
 
+-----
