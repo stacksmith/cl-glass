@@ -39,20 +39,25 @@ Note: surface and glass are optional...
 **initialize** &key surface 
 
 call after initializing SDL. 
+
 -----
 **out** str &key glass from to       
 
 Output a string. No wrapping or escape processing.  Optionally, a portion of the string.
+
 -----
 **gotoxy** x y &key glass             
 
 move cursor to x y location
+
 -----
 **cr** &key glass pixels                    
 
 move cursor to next line.  Y is advanced by line height or optional pixel amount.
+
 -----
 **clear** &key glass                  
 
 clear glass
+
 -----
