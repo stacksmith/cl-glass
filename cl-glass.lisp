@@ -24,7 +24,7 @@
 	(fp-srect gf) (fp (srect gf))
 	(fp-src gf) (fp (src gf))))
 
-(defclass glass ()
+(defclass glass (surface)
   ((font :initform (make-instance 'glass-font) :initarg :font :accessor font)
    (surface :initform *default-display* :initarg :surface :accessor surface)
    (pitch :initform 7 :initarg :pitch :accessor pitch) ;may be different from font's!
@@ -79,15 +79,19 @@
 ;;------------------------------------------------------------------------------
 ;;
 (defun clear (&key (glass *default-glass*))
-  (fill-surface  *black* :surface (surface glass)))
+  (fill-surface  *black* :surface (surface glass))
+  (gotoxy 0 0 :glass glass))
 ;;------------------------------------------------------------------------------
 ;; Note: with custom pixel increment, gotoxy may not make sense.
 (defun cr (&key (glass *default-glass*) (pixels (line-h glass)))
-  "perform a cr, optionally specifying y increment in pixels"
+  "perform a cr, optionally specifying y increment in pixels.  Return T if fits"
   (let ((r (drect glass)))
     (setf (x r) 0)
     (incf (y r) pixels)))
+;;------------------------------------------------------------------------------
 ;
+(defun has-room (&key (glass *default-glass*))
+  (< (y (drect glass)) (height (surface  glass))))
 ;
 ;;------------------------------------------------------------------------------
 ;;------------------------------------------------------------------------------

@@ -9,6 +9,7 @@
    :out
    :gotoxy
    :cr 
+   :has-room
    :*default-glass*
    :*default-glass-font*)
 )
