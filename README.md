@@ -6,7 +6,7 @@ A simple 'glass' fixed-width font console for text applications using SDL.
 Rationale
 ---------
 
-I could not find a simple, stable and interactive solution for a text UI.  ncurses bindings were painful and do not provide good keyboard support.  GTK bindings were unstable on my machine, and many possible solutions were rejected as too hard to use interactively in REPL.XS
+I could not find a simple, stable and interactive solution for a text UI.  ncurses bindings were painful and do not provide good keyboard support.  GTK bindings were unstable on my machine, and many possible solutions were rejected as too hard to use interactively in REPL.
 
 Description
 -----------
