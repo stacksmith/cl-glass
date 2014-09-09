@@ -6,7 +6,7 @@ A simple 'glass' fixed-width font console for text applications using SDL.
 Rationale
 ---------
 
-I could not find a simple, stable and interactive solution for a text UI.  ncurses bindings were painful and do not provide good keyboard support.  Well, this is Lisp, and I am an old hacker...
+I could not find a simple, stable and interactive solution for a text UI.  ncurses bindings were painful and do not provide good keyboard support.  GTK bindings were unstable on my machine, and many possible solutions were rejected as too hard to use interactively in REPL.XS
 
 Description
 -----------
@@ -30,27 +30,27 @@ Documentation
 
 Note: surface and glass are optional...
 
-*initialize* &key surface 
+**initialize** &key surface 
 
 call after initializing SDL. 
 
 
-*out* str &key glass from to       
+**out** str &key glass from to       
 
 Output a string. No wrapping or escape processing.  Optionally, a portion of the string.
 
 
-*gotoxy* x y &key glass             
+**gotoxy** x y &key glass             
 
 move cursor to x y location
 
 
-*cr* &key glass pixels                    
+**cr** &key glass pixels                    
 
 move cursor to next line.  Y is advanced by line height or optional pixel amount.
 
 
-*clear* &key glass                  
+**clear** &key glass                  
 
 clear glass
 
