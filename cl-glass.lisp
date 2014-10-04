@@ -22,27 +22,34 @@
   (setf (src gf) (load-image (concatenate 'string *glass-font-dir* "7x14-green1.png"))
 	(srect gf) (rectangle :x 0 :y 0 :w (pitch gf) :h (line-h gf))
 	(fp-srect gf) (fp (srect gf))
-	(fp-src gf) (fp (src gf))))
+	(fp-src gf) (fp (src gf)))
+)
 
-(defclass glass (surface)
-  ((font :initform (make-instance 'glass-font) :initarg :font :accessor font)
-   (surface :initform *default-display* :initarg :surface :accessor surface)
-   (pitch :initform 7 :initarg :pitch :accessor pitch) ;may be different from font's!
-   (line-h :initform 14 :initarg :line-h :accessor line-h)
+(defclass glass ()
+  (
+    (surface :initform *default-display* :initarg :surface :accessor surface)
+    (font :initform (make-instance 'glass-font) :initarg :font :accessor font)
+    (pitch :initform 7 :initarg :pitch :accessor pitch) ;may be different from font's!
+    (line-h :initform 14 :initarg :line-h :accessor line-h)
    ;;created and initialized after
-   (drect :initform nil :accessor drect)          ;dest rect - reused a lot
-   (fp-drect :initform nil :accessor fp-drect)
-   (fp-dest :initform nil :accessor fp-dest)))
+    (drect :initform nil :accessor drect)          ;dest rect - reused a lot
+    (fp-drect :initform nil :accessor fp-drect)
+    (fp-dest :initform nil :accessor fp-dest)
+   ))
+
 
 (defmethod initialize-instance :after ((gs glass) &key)
-  (setf (drect gs) (copy-rectangle (srect (font gs))) ;all we care is w and h
+ (format t "~%BEFORE")
+  =(setf (drect gs) (copy-rectangle (srect (font gs))) ;all we care is w and h
 	(fp-drect gs) (fp (drect gs))
 	(fp-dest gs) (fp (surface gs)))
+ (format t "~%AFTER")
  )
 ;;------------------------------------------------------------------------------
 ;; 
 (defun initialize (&key (surface *default-display*))
   "init font directory, default font and default glass, like lispbuilder-sdl"
+  (format t "~%...~A" surface)
   (setf *glass-font-dir*
 	(namestring (concatenate 'string (namestring (asdf:system-source-directory :cl-glass)) "fonts/")) )
   (setf *default-glass-font* (make-instance 'glass-font)
@@ -91,7 +98,7 @@
 ;;------------------------------------------------------------------------------
 ;
 (defun has-room (&key (glass *default-glass*))
-  (< (y (drect glass)) (height (surface  glass))))
+  (< (y (drect glass)) (height (surface  glass))))t
 ;
 ;;------------------------------------------------------------------------------
 ;;------------------------------------------------------------------------------

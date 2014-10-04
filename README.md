@@ -3,6 +3,13 @@ CL-GLASS
 
 A simple 'glass' fixed-width font console for text applications using SDL.
 
+Requirements:
+------------
+System libraries:
+-libsdl-dev
+-libsdl-gfx1.2-dev
+-libsdl-image1.2-dev
+
 Work-in-progress
 ----------------
 

@@ -6,7 +6,9 @@
   :author "Your Name <your.name@example.com>"
   :license "Do Whatever The Fuck You Want (DWTFYF)"
   :depends-on (#:lispbuilder-sdl
-               #:lispbuilder-sdl-gfx)
+               #:lispbuilder-sdl-gfx
+	       #:lispbuilder-sdl-image
+)
   :components ((:file "package")
                (:file "cl-glass")))
 
